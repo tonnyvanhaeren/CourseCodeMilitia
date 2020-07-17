@@ -5,7 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="5.2.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Business.Implementation\Business.Implementation.csproj" />
+    <ProjectReference Include="..\Business\Business.csproj" />
   </ItemGroup>
 
 </Project>
