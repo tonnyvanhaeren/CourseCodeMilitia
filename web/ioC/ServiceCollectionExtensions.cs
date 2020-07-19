@@ -18,6 +18,7 @@ namespace web.ioC
 
             return services;
         }
+
         public static TConfig ConfigurePOCO<TConfig>(this IServiceCollection services, IConfiguration configuration) where TConfig : class, new()
         {
             if (services == null) throw new ArgumentNullException(nameof(services));

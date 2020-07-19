@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Business.Services;
 using Microsoft.AspNetCore.Mvc;
-using web.Demo;
 using web.Mappings;
 using web.Models;
 
@@ -19,15 +18,11 @@ namespace web.Controllers
         };
 
         public IGroupsService _groupsService { get; }
-        public SomeRootConfiguration _config { get; }
 
-        private readonly DemoSecretsConfiguration _secrets;
 
-        public GroupsController(DemoSecretsConfiguration secrets,  SomeRootConfiguration config, IGroupsService groupsService)
+        public GroupsController(IGroupsService groupsService)
         {
             _groupsService = groupsService;
-            _config = config;
-            _secrets = secrets;
         }
 
         [HttpGet]
