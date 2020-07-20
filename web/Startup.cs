@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using web.Demo.Middleware;
 using web.ioC;
 
 namespace web
@@ -30,6 +31,9 @@ namespace web
         {
             services.AddMvc();
 
+
+            services.AddTransient<RequestTimingFactoryMiddleware>();
+
             // default ioC
             services.AddBusiness();
         }
@@ -47,9 +51,33 @@ namespace web
 
             app.UseRouting();
 
+            app.UseMiddleware<RequestTimingAdHocMiddelware>();
+            app.UseMiddleware<RequestTimingFactoryMiddleware>();
+
+            app.Map("/ping", builder =>
+            {
+                builder.Run(async (context) => { await context.Response.WriteAsync("pong"); });
+            });
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.OnStarting(() =>
+                {
+                    context.Response.Headers.Add("X-Powered-By", "ASP.NET Core: From 0 to overkill");
+                    return Task.CompletedTask;
+                });
+
+                await next.Invoke();
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();                
+            });
+
+            app.Run(async (context) =>
+            {
+                await context.Response.WriteAsync("nothing found to respond");
             });
         }
     }

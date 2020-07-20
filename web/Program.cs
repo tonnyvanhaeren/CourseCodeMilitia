@@ -27,22 +27,23 @@ namespace web
             var config = new LoggingConfiguration();
             var consoleTarget = new ColoredConsoleTarget("coloredConsole")
             {
-                Layout = @"${date:format=HH\:mm\:ss} ${level} ${message} ${exception}"
+                Layout = @"${date:format=HH\:mm\:ss} ${logger} ${level} ${message} ${exception}"
             };
 
             config.AddTarget(consoleTarget);
 
-            var fileTarget = new FileTarget("file")
-            {
-                FileName = "${basedir}/file.log",
-                Layout = @"${date:format=HH\:mm\:ss} ${level} ${message} ${exception} ${ndlc}"
-            };
+            //var fileTarget = new FileTarget("file")
+            //{
+            //    FileName = "${basedir}/file.log",
+            //    Layout = @"${date:format=HH\:mm\:ss} ${level} ${message} ${exception} ${ndlc}"
+            //};
 
-            config.AddTarget(fileTarget);
+            //config.AddTarget(fileTarget);
 
-            config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, consoleTarget);
-            config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Fatal, consoleTarget, "web.ioC.*");
-            config.AddRule(NLog.LogLevel.Warn, NLog.LogLevel.Fatal, fileTarget);
+            config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Info, consoleTarget, "web.*");
+            config.AddRule(NLog.LogLevel.Warn, NLog.LogLevel.Fatal, consoleTarget);
+
+            // config.AddRule(NLog.LogLevel.Warn, NLog.LogLevel.Fatal, fileTarget);
 
             LogManager.Configuration = config;
         }
