@@ -8,14 +8,14 @@ using Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using web.Demo.Filters;
-using web.Demo.Middleware;
 using web.ioC;
 
+[assembly: ApiController]
 namespace web
 {
     public class Startup
@@ -33,7 +33,7 @@ namespace web
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddMvc();
+            services.AddRequiredMvcComponents();
 
             services.AddDbContext<GroupManagementDbContext>(options =>
             {

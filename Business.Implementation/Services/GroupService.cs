@@ -43,15 +43,16 @@ namespace Business.Implementation.Services
 
         public async Task<Group> UpdateAsync(Group group, CancellationToken ct)
         {
-            var existingGroup = await _context.Groups.SingleOrDefaultAsync(g => g.Id == group.Id);
-            existingGroup.Name = group.Name;
-
+            var updatedGroupEntry = _context.Groups.Update(group.ToEntity());
             await _context.SaveChangesAsync(ct);
-            return existingGroup.ToService();
+            return updatedGroupEntry.Entity.ToService();
+        }
 
-            //var updatedGroupEntry = _context.Groups.Update(group.ToEntity());
-            //await _context.SaveChangesAsync(ct);
-            //return updatedGroupEntry.Entity.ToService();
+        public async Task RemoveAsync(long id, CancellationToken ct)
+        {
+            var entityToRemove = await _context.Groups.SingleOrDefaultAsync(g => g.Id == id, ct);
+            _context.Groups.Remove(entityToRemove);
+            await _context.SaveChangesAsync(ct);
         }
 
         //private async Task<Group> SimplestUpdateAsync(Group group, CancellationToken ct)

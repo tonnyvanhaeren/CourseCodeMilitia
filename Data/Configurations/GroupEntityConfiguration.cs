@@ -15,7 +15,8 @@ namespace Data.Configurations
 
             builder
                 .Property(e => e.Id)
-                .UseSerialColumn();
+                .UseIdentityAlwaysColumn();
+                //.UseSerialColumn();
 
             builder
                 .Property(e => e.RowVersion)

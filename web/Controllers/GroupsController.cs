@@ -5,20 +5,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Business.Services;
 using Microsoft.AspNetCore.Mvc;
-using web.Demo.Filters;
+
 using web.Mappings;
 using web.Models;
 
 namespace web.Controllers
 {
-
     [Route("groups")]
-    public class GroupsController : Controller
+    public class GroupsController : ControllerBase
     {
-        private static List<GroupViewModel> groups = new List<GroupViewModel>{
-            new GroupViewModel { Id= 1, Name= "sample group" }
-        };
-
         public IGroupsService _groupsService { get; }
 
         public GroupsController(IGroupsService groupsService)
@@ -27,56 +22,52 @@ namespace web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> IndexAsync(CancellationToken ct)
+        public async Task<IActionResult> GetAllAsync(CancellationToken ct)
         {
-            // throw new ArgumentException("Arg exception");
             var result = await _groupsService.GetAllAsync(ct);
-            return View(result.ToViewModel());
+            return Ok(result.ToModel());
         }
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> DetailsAsync(long id, CancellationToken ct)
+        public async Task<IActionResult> GetByIdAsync(long id, CancellationToken ct)
         {
             var group = await _groupsService.GetByIdAsync(id, ct);
-
-            if(group == null)
-            {
-                return NotFound();
-            }
-
-            return View(group.ToViewModel());
-        }
-
-        [HttpGet]
-        [Route("create")]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [Route("create")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAsync(GroupViewModel model, CancellationToken ct)
-        {
-            await _groupsService.AddAsync(model.ToServiceModel(), ct);
-            return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        [Route("{id}")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditAsync(long id, GroupViewModel model, CancellationToken ct)
-        {
-            var group = await _groupsService.UpdateAsync(model.ToServiceModel(), ct);
 
             if (group == null)
             {
                 return NotFound();
             }
 
-            return RedirectToAction("index");
+            return Ok(group.ToModel());
+        }
+
+        [HttpPost]
+        [HttpPut]
+        [Route("")]
+        public async Task<IActionResult> AddAsync(GroupModel model, CancellationToken ct)
+        {
+            model.Id = 0;
+            var group = await _groupsService.AddAsync(model.ToServiceModel(), ct);
+            return CreatedAtAction(nameof(GetByIdAsync), new { id = group.Id }, group);
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateAsync(long id, GroupModel model, CancellationToken ct)
+        {
+            model.Id = id;
+            var group = await _groupsService.UpdateAsync(model.ToServiceModel(), ct);
+
+            return Ok(group.ToModel());
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> RemoveAsync(long id, CancellationToken ct)
+        {
+            await _groupsService.RemoveAsync(id, ct);
+            return NoContent();
         }
     }
 }

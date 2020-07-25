@@ -44,5 +44,10 @@ namespace Business.Implementation.Services
             toUpdate.Name = group.Name;
             return Task.FromResult(toUpdate);
         }
+
+        public Task RemoveAsync(long id, CancellationToken ct)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
