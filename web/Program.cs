@@ -15,13 +15,30 @@ namespace web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            ConfigureNLog();
-            CreateHostBuilder(args).Build().Run();
+            // ConfigureNLog();
+            var host = CreateHostBuilder(args).Build();
+            await host.EnsureDbUpdateAsync();
+            host.Run();
         }
 
         //TODO: replace with Nlog.config
+
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                //.ConfigureLogging(builder =>
+                //{
+                //    builder.ClearProviders();
+                //    builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                //})
+                //.UseNLog()
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+
         private static void ConfigureNLog()
         {
             var config = new LoggingConfiguration();
@@ -41,25 +58,12 @@ namespace web
             //config.AddTarget(fileTarget);
 
             config.AddRule(NLog.LogLevel.Trace, NLog.LogLevel.Info, consoleTarget, "web.*");
-            config.AddRule(NLog.LogLevel.Warn, NLog.LogLevel.Fatal, consoleTarget);
+            config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, consoleTarget);
 
             // config.AddRule(NLog.LogLevel.Warn, NLog.LogLevel.Fatal, fileTarget);
 
             LogManager.Configuration = config;
         }
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureLogging(builder =>
-                {
-                    builder.ClearProviders();
-                    builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-                })
-                .UseNLog()
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
 
     }
 }

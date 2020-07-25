@@ -1,16 +1,18 @@
 ﻿using Business.Models;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Business.Services
 {
     public interface IGroupsService
     {
-        IReadOnlyCollection<Group> GetAll();
+        Task<IReadOnlyCollection<Group>> GetAllAsync(CancellationToken ct);
 
-        Group GetById(long Id);
+        Task<Group> GetByIdAsync(long Id, CancellationToken ct);
 
-        Group Update(Group group);
+        Task<Group> UpdateAsync(Group group, CancellationToken ct);
 
-        Group Add(Group group);
+        Task<Group> AddAsync(Group group, CancellationToken ct);
     }
 }

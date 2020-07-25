@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Business.Implementation.Services
 {
@@ -12,25 +14,26 @@ namespace Business.Implementation.Services
         private List<Group> _groups = new List<Group>();
         private long _currentId = 0;
 
-        public IReadOnlyCollection<Group> GetAll()
+        public Task<IReadOnlyCollection<Group>> GetAllAsync(CancellationToken ct)
         {
-            return _groups.AsReadOnly();
+            return Task.FromResult<IReadOnlyCollection<Group>>(_groups.AsReadOnly());
         }
 
-        public Group GetById(long Id)
+        public async Task<Group> GetByIdAsync(long Id, CancellationToken ct)
         {
+            await Task.Delay(5000, ct);
+
             return _groups.SingleOrDefault(g => g.Id == Id);
-
         }
 
-        public Group Add(Group group)
+        public Task<Group> AddAsync(Group group, CancellationToken ct)
         {
             group.Id = ++_currentId;
             _groups.Add(group);
-            return group;
+            return Task.FromResult(group);
         }
 
-        public Group Update(Group group)
+        public Task<Group> UpdateAsync(Group group, CancellationToken ct)
         {
             var toUpdate = _groups.SingleOrDefault(g => g.Id == group.Id);
             if (toUpdate == null)
@@ -39,7 +42,7 @@ namespace Business.Implementation.Services
             }
 
             toUpdate.Name = group.Name;
-            return toUpdate;
+            return Task.FromResult(toUpdate);
         }
     }
 }

@@ -13,7 +13,9 @@ namespace web.ioC
     {
         public static IServiceCollection AddBusiness(this IServiceCollection services)
         {
-            services.AddSingleton<IGroupsService, InMemoryGroupsService>();
+            // services.AddSingleton<IGroupsService, InMemoryGroupsService>();
+            services.AddScoped<IGroupsService, GroupService>();
+
             // More Services ...
 
             return services;

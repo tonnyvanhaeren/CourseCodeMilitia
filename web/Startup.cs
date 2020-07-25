@@ -4,12 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Business.Implementation.Services;
 using Business.Services;
+using Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using web.Demo.Filters;
 using web.Demo.Middleware;
 using web.ioC;
 
@@ -29,10 +32,17 @@ namespace web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddMvc();
 
+            services.AddDbContext<GroupManagementDbContext>(options =>
+            {
+                options.UseNpgsql(_config.GetConnectionString("GroupManagementDbContext"));
+                options.EnableSensitiveDataLogging();
+            });
 
-            services.AddTransient<RequestTimingFactoryMiddleware>();
+            // services.AddTransient<RequestTimingFactoryMiddleware>();
+            // services.AddTransient<DemoExceptionFilter>();
 
             // default ioC
             services.AddBusiness();
@@ -51,24 +61,24 @@ namespace web
 
             app.UseRouting();
 
-            app.UseMiddleware<RequestTimingAdHocMiddelware>();
-            app.UseMiddleware<RequestTimingFactoryMiddleware>();
+            //app.UseMiddleware<RequestTimingAdHocMiddelware>();
+            //app.UseMiddleware<RequestTimingFactoryMiddleware>();
 
-            app.Map("/ping", builder =>
-            {
-                builder.Run(async (context) => { await context.Response.WriteAsync("pong"); });
-            });
+            //app.Map("/ping", builder =>
+            //{
+            //    builder.Run(async (context) => { await context.Response.WriteAsync("pong"); });
+            //});
 
-            app.Use(async (context, next) =>
-            {
-                context.Response.OnStarting(() =>
-                {
-                    context.Response.Headers.Add("X-Powered-By", "ASP.NET Core: From 0 to overkill");
-                    return Task.CompletedTask;
-                });
+            //app.Use(async (context, next) =>
+            //{
+            //    context.Response.OnStarting(() =>
+            //    {
+            //        context.Response.Headers.Add("X-Powered-By", "ASP.NET Core: From 0 to overkill");
+            //        return Task.CompletedTask;
+            //    });
 
-                await next.Invoke();
-            });
+            //    await next.Invoke();
+            //});
 
             app.UseEndpoints(endpoints =>
             {

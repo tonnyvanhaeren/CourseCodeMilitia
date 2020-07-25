@@ -1,0 +1,5 @@
+﻿## first migration
+
+dotnet ef migrations add InitialCreate --startup-project ..\web\web.csproj
+
+dotnet ef migrations add AddConcurrencyToken --startup-project ..\web\web.csproj

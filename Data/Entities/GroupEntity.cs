@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Business.Models
+namespace Data.Entities
 {
-    public class Group
+    public class GroupEntity
     {
         public long Id { get; set; }
         public string Name { get; set; }
-        public string RowVersion { get; set; }
+        public uint RowVersion { get; set; }
     }
 }

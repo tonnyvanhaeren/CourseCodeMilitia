@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Business.Services;
 using Microsoft.AspNetCore.Mvc;
+using web.Demo.Filters;
 using web.Mappings;
 using web.Models;
 
@@ -19,23 +21,24 @@ namespace web.Controllers
 
         public IGroupsService _groupsService { get; }
 
-
         public GroupsController(IGroupsService groupsService)
         {
             _groupsService = groupsService;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync(CancellationToken ct)
         {
-            return View(_groupsService.GetAll().ToViewModel());
+            // throw new ArgumentException("Arg exception");
+            var result = await _groupsService.GetAllAsync(ct);
+            return View(result.ToViewModel());
         }
 
         [HttpGet]
         [Route("{id}")]
-        public IActionResult Details(long id)
+        public async Task<IActionResult> DetailsAsync(long id, CancellationToken ct)
         {
-            var group = _groupsService.GetById(id);
+            var group = await _groupsService.GetByIdAsync(id, ct);
 
             if(group == null)
             {
@@ -55,18 +58,18 @@ namespace web.Controllers
         [HttpPost]
         [Route("create")]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(GroupViewModel model)
+        public async Task<IActionResult> CreateAsync(GroupViewModel model, CancellationToken ct)
         {
-            _groupsService.Add(model.ToServiceModel());
+            await _groupsService.AddAsync(model.ToServiceModel(), ct);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         [Route("{id}")]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(long id, GroupViewModel model)
+        public async Task<IActionResult> EditAsync(long id, GroupViewModel model, CancellationToken ct)
         {
-            var group = _groupsService.Update(model.ToServiceModel());
+            var group = await _groupsService.UpdateAsync(model.ToServiceModel(), ct);
 
             if (group == null)
             {

@@ -4,8 +4,9 @@
     Layout = null;
 }
 
-<form asp-controller="Groups" asp-action="Edit" asp-route-id="@Model.Id" method="post">
-    <label asp-for="Name">Name</label>
-    <input asp-for="Name" />
-    <button type="submit">Save</button>
-</form>
+    <form asp-controller="Groups" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        <label asp-for="Name">Name</label>
+        <input asp-for="Name" />
+        <input asp-for="RowVersion" type="hidden" />
+        <button type="submit">Save</button>
+    </form>
