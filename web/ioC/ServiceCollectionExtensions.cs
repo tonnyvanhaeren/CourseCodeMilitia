@@ -26,8 +26,7 @@ namespace web.ioC
 
             mvcBuilder.AddJsonOptions(options =>
            {
-               options.JsonSerializerOptions.PropertyNamingPolicy = null;
-               options.JsonSerializerOptions.DictionaryKeyPolicy = null;
+               options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
            });
 
             mvcBuilder.SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
