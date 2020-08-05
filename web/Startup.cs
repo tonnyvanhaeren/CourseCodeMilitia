@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Business.Implementation.Services;
-using Business.Services;
 using Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -46,6 +40,9 @@ namespace web
 
             // default ioC
             services.AddBusiness();
+
+            services.AddConfiguredAuth();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -61,24 +58,7 @@ namespace web
 
             app.UseRouting();
 
-            //app.UseMiddleware<RequestTimingAdHocMiddelware>();
-            //app.UseMiddleware<RequestTimingFactoryMiddleware>();
-
-            //app.Map("/ping", builder =>
-            //{
-            //    builder.Run(async (context) => { await context.Response.WriteAsync("pong"); });
-            //});
-
-            //app.Use(async (context, next) =>
-            //{
-            //    context.Response.OnStarting(() =>
-            //    {
-            //        context.Response.Headers.Add("X-Powered-By", "ASP.NET Core: From 0 to overkill");
-            //        return Task.CompletedTask;
-            //    });
-
-            //    await next.Invoke();
-            //});
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
@@ -87,7 +67,7 @@ namespace web
 
             app.Run(async (context) =>
             {
-                await context.Response.WriteAsync("nothing found to respond");
+                await context.Response.WriteAsync("No Middleware could handle the request");
             });
         }
     }
